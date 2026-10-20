@@ -71,7 +71,7 @@ dialog{border:1px solid var(--line);border-radius:20px;background:#121e18;color:
       </div>
       <div id="cameraGrid" class="camera-grid"></div>
       <div id="emptyGrid" class="empty-grid" hidden><div class="big">🔭</div><h3 id="emptyTitle">Your camera library is waiting</h3><p id="emptyText">Add a YouTube live stream to build your own wildlife TV channel.</p><button id="emptyAdd" class="primary">＋ Add a camera</button></div>
-      <div class="footer"><span>Wildlife Live TV · Camera catalogue: streams.json</span><span>To publish changes for everyone, export JSON and replace streams.json in GitHub.</span></div>
+      <div class="footer"><span>Wildlife Live TV · Shared catalogue: streams.json (built-in starter list available)</span><span>To publish changes for everyone, export JSON and replace streams.json in GitHub.</span></div>
     </section>
   </main>
 </div>
@@ -111,15 +111,16 @@ dialog{border:1px solid var(--line);border-radius:20px;background:#121e18;color:
       return Array.isArray(raw) ? raw.filter(c => c && c.id && c.name && c.videoId && /^[\w-]{11}$/.test(c.videoId)).map(c => ({...c,category:categories.includes(c.category)?c.category:'Other',favorite:!!c.favorite})) : [];
     } catch(e) { return []; }
   }
+  const BUILT_IN_CAMERAS = [{"id":"camera-XsOU8JnEpNM","videoId":"XsOU8JnEpNM","name":"ol Donyo Lodge | Wildlife Live Stream – Kenya","category":"African Wildlife","location":"Kenya","favorite":false,"created":1792464000000},{"id":"camera-BmOLK7LTKbY","videoId":"BmOLK7LTKbY","name":"Live from the Serengeti | Wildlife Safari Cam","category":"African Wildlife","location":"Serengeti, Tanzania","favorite":false,"created":1792463999999},{"id":"camera-yuIm1V7Ne7I","videoId":"yuIm1V7Ne7I","name":"LIVE: Onguma Waterhole - Elephants, Giraffes & More | Namibia 24/7","category":"African Wildlife","location":"Namibia","favorite":false,"created":1792463999998},{"id":"camera-2EZavJUNdLI","videoId":"2EZavJUNdLI","name":"Twin Pan Live Hide Cam | Zarafa Camp | Selinda Reserve, Botswana","category":"African Wildlife","location":"Botswana","favorite":false,"created":1792463999997},{"id":"camera-gdrNUUf-cQw","videoId":"gdrNUUf-cQw","name":"Tembe Elephant Park | Wildlife Live Stream","category":"African Wildlife","location":"South Africa","favorite":false,"created":1792463999996},{"id":"camera-y9t1g8Ike6g","videoId":"y9t1g8Ike6g","name":"LIVE Bird Feeder & Wildlife Cam - Gettysburg, PA","category":"Birds","location":"Gettysburg, Pennsylvania, USA","favorite":false,"created":1792463999995},{"id":"camera-nQqDLzM_OAM","videoId":"nQqDLzM_OAM","name":"Utopia Village Top-of-Wall Underwater Reef Cam","category":"Ocean","location":"Utopia Village","favorite":false,"created":1792463999994}];
   async function initialiseCameras(){
-    let catalogue = [];
+    let catalogue = BUILT_IN_CAMERAS.slice();
     try {
       const response = await fetch('./streams.json', {cache:'no-store'});
       if (!response.ok) throw new Error('Could not load streams.json');
       const data = await response.json();
-      if (Array.isArray(data)) catalogue = data;
+      if (Array.isArray(data) && data.length) catalogue = data;
     } catch(e) {
-      console.warn('Camera catalogue could not be loaded; using browser-saved cameras.', e);
+      console.warn('streams.json could not be loaded; using the built-in starter camera list.', e);
     }
     const valid = items => items.filter(c => c && typeof c.name === 'string' && /^[\w-]{11}$/.test(c.videoId || '')).map(c => ({
       id: c.id || ('camera-' + c.videoId), videoId:c.videoId, name:c.name.slice(0,90),
