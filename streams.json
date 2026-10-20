@@ -2,10 +2,64 @@
   {
     "id": "camera-XsOU8JnEpNM",
     "videoId": "XsOU8JnEpNM",
-    "name": "Wildlife Live Stream — XsOU8JnEpNM",
+    "name": "ol Donyo Lodge | Wildlife Live Stream – Kenya",
     "category": "African Wildlife",
-    "location": "YouTube",
+    "location": "Kenya",
     "favorite": false,
     "created": 1792464000000
+  },
+  {
+    "id": "camera-BmOLK7LTKbY",
+    "videoId": "BmOLK7LTKbY",
+    "name": "Live from the Serengeti | Wildlife Safari Cam",
+    "category": "African Wildlife",
+    "location": "Serengeti, Tanzania",
+    "favorite": false,
+    "created": 1792463999999
+  },
+  {
+    "id": "camera-yuIm1V7Ne7I",
+    "videoId": "yuIm1V7Ne7I",
+    "name": "LIVE: Onguma Waterhole - Elephants, Giraffes & More | Namibia 24/7",
+    "category": "African Wildlife",
+    "location": "Namibia",
+    "favorite": false,
+    "created": 1792463999998
+  },
+  {
+    "id": "camera-2EZavJUNdLI",
+    "videoId": "2EZavJUNdLI",
+    "name": "Twin Pan Live Hide Cam | Zarafa Camp | Selinda Reserve, Botswana",
+    "category": "African Wildlife",
+    "location": "Botswana",
+    "favorite": false,
+    "created": 1792463999997
+  },
+  {
+    "id": "camera-gdrNUUf-cQw",
+    "videoId": "gdrNUUf-cQw",
+    "name": "Tembe Elephant Park | Wildlife Live Stream",
+    "category": "African Wildlife",
+    "location": "South Africa",
+    "favorite": false,
+    "created": 1792463999996
+  },
+  {
+    "id": "camera-y9t1g8Ike6g",
+    "videoId": "y9t1g8Ike6g",
+    "name": "LIVE Bird Feeder & Wildlife Cam - Gettysburg, PA",
+    "category": "Birds",
+    "location": "Gettysburg, Pennsylvania, USA",
+    "favorite": false,
+    "created": 1792463999995
+  },
+  {
+    "id": "camera-nQqDLzM_OAM",
+    "videoId": "nQqDLzM_OAM",
+    "name": "Utopia Village Top-of-Wall Underwater Reef Cam",
+    "category": "Ocean",
+    "location": "Utopia Village",
+    "favorite": false,
+    "created": 1792463999994
   }
 ]
