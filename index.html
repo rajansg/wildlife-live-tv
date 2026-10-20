@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101c18">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Wildlife Live TV — Custom Camera</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1210;--panel:#121e19;--panel2:#192720;--line:#2a3b31;--text:#edf5ee;--muted:#a2b5a7;--green:#9be36d;--gold:#f3c86a;--red:#ff7b72}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1c3526 0,transparent 40%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);padding:10px 13px;transition:.18s}button:hover{border-color:var(--green);transform:translateY(-1px)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.app{max-width:1450px;margin:auto;padding:22px clamp(14px,3vw,38px) 36px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#a8e779,#2f7951);font-size:26px;box-shadow:0 8px 28px #83d65b22}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--green);font-weight:800}.brand h1{font-size:clamp(23px,3vw,34px);line-height:1.08;margin:3px 0 0;letter-spacing:-.04em}.top-right{display:flex;gap:9px;align-items:center}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--muted);font-size:12px;white-space:nowrap}.pill span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff625a;margin-right:7px;box-shadow:0 0 10px #ff625a}
+.hero{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(270px,.75fr);gap:18px;align-items:stretch}.player-card,.side-card,.library-wrap,.modal{background:linear-gradient(150deg,#17241d,#101914);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 15px 45px #0002}.player-head{padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}.now-label{display:flex;align-items:center;gap:9px;min-width:0}.live-dot{width:9px;height:9px;flex:none;border-radius:50%;background:var(--red);box-shadow:0 0 12px #ff7b7277}.player-head h2{font-size:16px;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.player-head p{margin:2px 0 0;color:var(--muted);font-size:12px}.player-actions{display:flex;gap:7px;flex:none}.icon-btn{padding:8px 10px}.video-frame{position:relative;background:#050806;aspect-ratio:16/9;width:100%;display:grid;place-items:center}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.empty-player{max-width:440px;text-align:center;padding:28px}.empty-player .big{font-size:54px;filter:drop-shadow(0 4px 18px #8fdb6944)}.empty-player h3{font-size:22px;margin:10px 0 5px}.empty-player p{color:var(--muted);margin:0 0 17px}.primary{background:var(--green);color:#122015;border-color:var(--green);font-weight:800}.primary:hover{background:#b8f595;border-color:#b8f595}.player-foot{padding:14px 18px 17px;display:flex;align-items:center;justify-content:space-between;gap:12px}.stream-meta{min-width:0}.stream-meta strong{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stream-meta span{font-size:12px;color:var(--muted)}.subtle{color:var(--muted);font-size:12px}.side-card{padding:19px;display:flex;flex-direction:column;gap:14px}.side-title{font-size:17px;margin:0}.side-intro{color:var(--muted);font-size:13px;margin:-8px 0 2px}.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.quick{min-height:91px;text-align:left;padding:12px;border-radius:14px;background:#1a2a21}.quick .emoji{font-size:24px;display:block;margin-bottom:5px}.quick strong{display:block;font-size:13px}.quick small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.tip{margin-top:auto;background:#1d2a20;border:1px solid #304b32;border-radius:13px;padding:12px;color:#c8d8c9;font-size:12px}.tip b{color:var(--green)}
+.library-wrap{margin-top:22px;padding:20px}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:17px}.section-head h2{margin:0;font-size:21px;letter-spacing:-.025em}.section-head p{margin:3px 0 0;color:var(--muted);font-size:13px}.controls{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:17px}.search{flex:1;min-width:190px;position:relative}.search input{width:100%;padding:11px 13px 11px 38px}.search:before{content:'⌕';position:absolute;left:13px;top:6px;color:var(--muted);font-size:23px}.field, input,select{background:#0c1510;border:1px solid var(--line);color:var(--text);border-radius:11px;padding:10px 12px;min-width:0}.controls select{min-width:145px}.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:5px;margin-bottom:17px}.tab{white-space:nowrap;border-radius:999px;padding:8px 13px;font-size:12px;color:var(--muted)}.tab.active{background:#d4f5bd;color:#142117;border-color:#d4f5bd;font-weight:800}.camera-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.camera{border:1px solid var(--line);background:#111c16;border-radius:15px;overflow:hidden;min-width:0;transition:.2s}.camera:hover{transform:translateY(-3px);border-color:#638557}.thumb{height:auto;aspect-ratio:16/9;position:relative;background:linear-gradient(135deg,#314d36,#17271e);display:grid;place-items:center;overflow:hidden}.thumb img{width:100%;height:100%;object-fit:cover;display:block}.thumb-fallback{font-size:38px}.thumb-tag{position:absolute;left:9px;top:9px;background:#0b1210dd;border-radius:6px;padding:4px 7px;font-size:10px;text-transform:uppercase;letter-spacing:.06em}.fav{position:absolute;right:8px;top:8px;background:#0b1210dd;border-radius:50%;width:34px;height:34px;padding:0;border:1px solid #ffffff24;font-size:17px}.fav.on{color:#ffd56c}.camera-info{padding:12px}.camera-title{font-size:14px;font-weight:750;line-height:1.3;margin:0 0 5px;overflow-wrap:anywhere}.camera-cat{font-size:11px;color:var(--green);font-weight:700}.camera-note{font-size:12px;color:var(--muted);margin:7px 0 11px;min-height:18px}.camera-actions{display:flex;gap:7px}.camera-actions button{flex:1;padding:8px;font-size:12px}.camera-actions .watch{background:#d4f5bd;color:#142117;border-color:#d4f5bd;font-weight:800}.camera-actions .remove{flex:0 0 auto;color:#f4a6a0}.empty-grid{text-align:center;padding:44px 16px;color:var(--muted);border:1px dashed var(--line);border-radius:15px}.empty-grid .big{font-size:36px}.empty-grid h3{color:var(--text);margin:8px 0 4px}.empty-grid p{margin:0 auto 14px;max-width:420px;font-size:13px}.footer{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:15px 3px;color:#7f9484;font-size:11px}
+dialog{border:1px solid var(--line);border-radius:20px;background:#121e18;color:var(--text);padding:0;width:min(560px,calc(100% - 24px));max-height:90vh;box-shadow:0 25px 100px #0009}dialog::backdrop{background:#030805c9;backdrop-filter:blur(5px)}.modal-head{padding:20px 22px 14px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line)}.modal-head h2{margin:0;font-size:21px}.modal-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.close{font-size:20px;padding:4px 10px}.modal-body{padding:19px 22px 22px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-group{margin-bottom:14px}.form-group label{display:block;font-size:12px;color:#c5d5c7;font-weight:750;margin-bottom:6px}.form-group input,.form-group select{width:100%}.help{font-size:11px;color:var(--muted);margin-top:6px}.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}.notice{font-size:12px;color:#d6e4d7;background:#1a2b20;border:1px solid #2b4932;padding:11px 12px;border-radius:11px;margin-top:13px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#e0f7ce;color:#122015;padding:11px 16px;border-radius:12px;font-size:13px;font-weight:750;box-shadow:0 10px 40px #0006;transition:.22s;z-index:10;max-width:calc(100% - 24px)}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1050px){.camera-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr)}}
+@media(max-width:760px){.app{padding:14px 12px 25px}.top{align-items:flex-start}.top-right .pill{display:none}.hero{grid-template-columns:1fr}.side-card{padding:16px}.quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.quick{padding:9px;min-height:80px}.quick .emoji{font-size:21px}.quick strong{font-size:11px}.quick small{display:none}.tip{margin-top:0}.camera-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.library-wrap{padding:14px}.player-head{padding:13px}.player-foot{padding:12px 13px}.player-actions button{font-size:12px;padding:7px}.section-head{align-items:center}}
+@media(max-width:430px){.brand{gap:9px}.logo{width:41px;height:41px}.brand h1{font-size:22px}.camera-grid{gap:9px}.camera-info{padding:10px}.camera-title{font-size:13px}.camera-note{font-size:11px}.camera-actions button{padding:7px 5px;font-size:11px}.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quick{min-height:70px}.form-row{grid-template-columns:1fr}.section-head h2{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><div class="logo">🌿</div><div><div class="eyebrow">Your personal nature channel</div><h1>Wildlife <span style="color:var(--green)">Live TV</span></h1></div></div>
+    <div class="top-right"><span class="pill"><span></span> YouTube streams</span><button class="primary" id="addTop">＋ Add camera</button></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="player-card">
+        <div class="player-head">
+          <div class="now-label"><span class="live-dot"></span><div style="min-width:0"><h2 id="playingTitle">Your wildlife screen</h2><p id="playingSubtitle">Choose a camera to begin watching</p></div></div>
+          <div class="player-actions"><button class="icon-btn" id="openYoutube" title="Open on YouTube" disabled>↗ YouTube</button><button class="icon-btn" id="reloadPlayer" title="Reload player" disabled>⟳</button></div>
+        </div>
+        <div class="video-frame" id="videoFrame">
+          <div class="empty-player"><div class="big">🦉</div><h3>Bring the wild closer</h3><p>Add a YouTube wildlife livestream, then watch it right here. Your camera collection stays saved in this browser.</p><button class="primary" id="addFirst">＋ Add your first camera</button></div>
+        </div>
+        <div class="player-foot"><div class="stream-meta"><strong id="footTitle">Ready for your next adventure</strong><span id="footMeta">Birdsong, watering holes, nests and more</span></div><span class="pill" id="streamCount">0 cameras</span></div>
+      </div>
+      <aside class="side-card">
+        <div><div class="eyebrow">Explore the wild</div><h2 class="side-title">Choose a habitat</h2></div>
+        <p class="side-intro">Filter your collection by the kind of wildlife you want to visit.</p>
+        <div class="quick-grid">
+          <button class="quick" data-category="African Wildlife"><span class="emoji">🦁</span><strong>African wildlife</strong><small>Safaris & watering holes</small></button>
+          <button class="quick" data-category="Birds"><span class="emoji">🦜</span><strong>Bird cams</strong><small>Feeders & birdhouses</small></button>
+          <button class="quick" data-category="Nests"><span class="emoji">🪺</span><strong>Nests & chicks</strong><small>Family life</small></button>
+          <button class="quick" data-category="Forest"><span class="emoji">🌳</span><strong>Forest cams</strong><small>Life among the trees</small></button>
+        </div>
+        <div class="tip"><b>🌱 Nature-watching tip</b><br>Wildlife is unpredictable. Keep a camera open while you work and you might catch a surprising visit. Stream availability depends on the channel owner.</div>
+      </aside>
+    </section>
+
+    <section class="library-wrap">
+      <div class="section-head"><div><div class="eyebrow">Your saved collection</div><h2>Camera library</h2><p>Add and organise the live streams you love.</p></div><button id="addLibrary" class="primary">＋ Add stream</button></div>
+      <div class="controls">
+        <div class="search"><input id="searchInput" type="search" placeholder="Search cameras, places, wildlife…" aria-label="Search cameras"></div>
+        <select id="sortSelect" aria-label="Sort cameras"><option value="recent">Recently added</option><option value="az">Name A–Z</option><option value="favorites">Favourites first</option></select>
+        <button id="exportBtn" title="Download a backup of your camera list">⇩ Backup</button>
+        <button id="importBtn" title="Restore a camera list backup">⇧ Restore</button><input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-filter="All">All cameras</button>
+        <button class="tab" data-filter="Favorites">★ Favourites</button>
+        <button class="tab" data-filter="African Wildlife">🦁 African wildlife</button>
+        <button class="tab" data-filter="Birds">🦜 Birds</button>
+        <button class="tab" data-filter="Nests">🪺 Nests</button>
+        <button class="tab" data-filter="Forest">🌳 Forest</button>
+        <button class="tab" data-filter="Ocean">🌊 Ocean</button>
+        <button class="tab" data-filter="Other">✨ Other</button>
+      </div>
+      <div id="cameraGrid" class="camera-grid"></div>
+      <div id="emptyGrid" class="empty-grid" hidden><div class="big">🔭</div><h3 id="emptyTitle">Your camera library is waiting</h3><p id="emptyText">Add a YouTube live stream to build your own wildlife TV channel.</p><button id="emptyAdd" class="primary">＋ Add a camera</button></div>
+      <div class="footer"><span>Wildlife Live TV · A personal browser-based stream library</span><span>Your list is stored locally in this browser.</span></div>
+    </section>
+  </main>
+</div>
+
+<dialog id="addDialog">
+  <div class="modal-head"><div><div class="eyebrow">Grow your collection</div><h2>Add a wildlife camera</h2><p>Paste a YouTube video or livestream link.</p></div><button class="close" id="closeDialog" aria-label="Close">×</button></div>
+  <form id="addForm" class="modal-body">
+    <div class="form-group"><label for="streamUrl">YouTube URL *</label><input id="streamUrl" type="url" placeholder="https://www.youtube.com/live/VIDEO_ID" required></div>
+    <div class="help" style="margin-top:-7px;margin-bottom:15px">Accepts youtube.com/watch?v=…, youtube.com/live/…, youtu.be/… and youtube.com/shorts/… links. Use a direct video link, not a channel homepage.</div>
+    <div class="form-group"><label for="streamName">Camera name *</label><input id="streamName" maxlength="90" placeholder="e.g. African Watering Hole" required></div>
+    <div class="form-row">
+      <div class="form-group"><label for="streamCategory">Category</label><select id="streamCategory"><option>African Wildlife</option><option>Birds</option><option>Nests</option><option>Forest</option><option>Ocean</option><option>Other</option></select></div>
+      <div class="form-group"><label for="streamLocation">Location / notes</label><input id="streamLocation" maxlength="100" placeholder="e.g. South Africa"></div>
+    </div>
+    <div class="notice">Some creators disable embedded playback. If a stream refuses to play, try another livestream or use the ↗ YouTube button to check the original video.</div>
+    <div class="form-actions"><button type="button" id="cancelAdd">Cancel</button><button type="submit" class="primary">Save camera</button></div>
+  </form>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+  'use strict';
+  const STORAGE_KEY = 'wildlifeLiveTV.cameras.v1';
+  const categories = ['African Wildlife','Birds','Nests','Forest','Ocean','Other'];
+  const icons = {'African Wildlife':'🦁','Birds':'🦜','Nests':'🪺','Forest':'🌳','Ocean':'🌊','Other':'✨'};
+  let cameras = loadCameras();
+  let activeFilter = 'All';
+  let currentId = null;
+  let toastTimer;
+
+  const $ = id => document.getElementById(id);
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function loadCameras(){
+    let saved = [];
+    try {
+      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      saved = Array.isArray(raw) ? raw.filter(c => c && c.id && c.name && c.videoId && /^[\w-]{11}$/.test(c.videoId)).map(c => ({...c,category:categories.includes(c.category)?c.category:'Other',favorite:!!c.favorite})) : [];
+    } catch(e) { saved = []; }
+    // Include the user's requested stream automatically, while preserving their saved cameras.
+    if (!saved.some(c => c.videoId === 'XsOU8JnEpNM')) {
+      saved.unshift({id:'preset-XsOU8JnEpNM', videoId:'XsOU8JnEpNM', name:'Wildlife Live Stream — XsOU8JnEpNM', category:'African Wildlife', location:'YouTube', favorite:false, created:Date.now()});
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch(e) {}
+    }
+    return saved;
+  }
+  function save(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cameras)); } catch(e){ notify('Could not save. Browser storage may be full.'); } updateCount(); }
+  function notify(message){ const el=$('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2600); }
+  function updateCount(){ $('streamCount').textContent = `${cameras.length} camera${cameras.length===1?'':'s'}`; }
+  function parseVideoId(input){
+    try {
+      const u = new URL(input.trim());
+      const host = u.hostname.toLowerCase().replace(/^www\./,'').replace(/^m\./,'');
+      if(host === 'youtu.be') return u.pathname.split('/').filter(Boolean)[0] || null;
+      if(!['youtube.com','youtube-nocookie.com','music.youtube.com'].includes(host)) return null;
+      if(u.pathname === '/watch') return u.searchParams.get('v');
+      const parts=u.pathname.split('/').filter(Boolean);
+      if(['live','embed','shorts','v'].includes(parts[0])) return parts[1] || null;
+      return null;
+    } catch(e){ return null; }
+  }
+  function isValidId(id){ return typeof id==='string' && /^[\w-]{11}$/.test(id); }
+  function thumbnail(id){ return `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`; }
+  function render(){
+    const query=$('searchInput').value.trim().toLowerCase();
+    let list=cameras.filter(c=>{
+      const filterOk=activeFilter==='All'||(activeFilter==='Favorites'?c.favorite:c.category===activeFilter);
+      const searchOk=!query||`${c.name} ${c.category} ${c.location||''}`.toLowerCase().includes(query);
+      return filterOk&&searchOk;
+    });
+    const sort=$('sortSelect').value;
+    if(sort==='az') list.sort((a,b)=>a.name.localeCompare(b.name));
+    if(sort==='favorites') list.sort((a,b)=>Number(b.favorite)-Number(a.favorite)||b.created-a.created);
+    if(sort==='recent') list.sort((a,b)=>b.created-a.created);
+    $('cameraGrid').innerHTML=list.map(c=>`
+      <article class="camera">
+        <div class="thumb">
+          <img src="${thumbnail(c.videoId)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <span class="thumb-fallback" style="display:none">${icons[c.category]||'🌿'}</span>
+          <span class="thumb-tag">${escapeHtml(c.category)}</span>
+          <button class="fav ${c.favorite?'on':''}" data-fav="${escapeHtml(c.id)}" title="${c.favorite?'Remove favourite':'Add favourite'}" aria-label="${c.favorite?'Remove favourite':'Add favourite'}">${c.favorite?'★':'☆'}</button>
+        </div>
+        <div class="camera-info">
+          <h3 class="camera-title">${escapeHtml(c.name)}</h3>
+          <div class="camera-cat">${icons[c.category]||'✨'} ${escapeHtml(c.category)}</div>
+          <p class="camera-note">${escapeHtml(c.location||'YouTube livestream')}</p>
+          <div class="camera-actions"><button class="watch" data-watch="${escapeHtml(c.id)}">▶ Watch</button><button class="remove" data-remove="${escapeHtml(c.id)}" title="Remove camera" aria-label="Remove ${escapeHtml(c.name)}">✕</button></div>
+        </div>
+      </article>`).join('');
+    $('emptyGrid').hidden=list.length>0;
+    $('cameraGrid').hidden=list.length===0;
+    if(list.length===0){
+      const noCameras=cameras.length===0;
+      $('emptyTitle').textContent=noCameras?'Your camera library is waiting':'No cameras found';
+      $('emptyText').textContent=noCameras?'Add a YouTube live stream to build your own wildlife TV channel.':'Try another search or category, or add a new stream.';
+      $('emptyAdd').textContent=noCameras?'＋ Add a camera':'＋ Add a camera';
+    }
+    updateCount();
+  }
+  function setFilter(filter){
+    activeFilter=filter;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===filter));
+    render();
+  }
+  function playCamera(id){
+    const c=cameras.find(x=>x.id===id); if(!c)return;
+    currentId=id;
+    $('playingTitle').textContent=c.name;
+    $('playingSubtitle').textContent=`${icons[c.category]||'✨'} ${c.category}${c.location?' · '+c.location:''}`;
+    $('footTitle').textContent=c.name;
+    $('footMeta').textContent=`${c.location||c.category} · Embedded YouTube player`;
+    $('openYoutube').disabled=false;$('reloadPlayer').disabled=false;
+    $('videoFrame').innerHTML=`<iframe id="ytPlayer" src="https://www.youtube.com/embed/${encodeURIComponent(c.videoId)}?autoplay=0&rel=0&playsinline=1" title="${escapeHtml(c.name)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+    if(window.innerWidth<760) $('videoFrame').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function openAdd(){ $('addForm').reset(); $('addDialog').showModal(); setTimeout(()=>$('streamUrl').focus(),60); }
+  function closeAdd(){ $('addDialog').close(); }
+  function addCamera(event){
+    event.preventDefault();
+    const url=$('streamUrl').value.trim(), videoId=parseVideoId(url);
+    if(!isValidId(videoId)){notify('Please enter a valid YouTube video or livestream URL.');return;}
+    if(cameras.some(c=>c.videoId===videoId)){notify('That stream is already in your library.');return;}
+    const name=$('streamName').value.trim(); if(!name){notify('Please give this camera a name.');return;}
+    const category=$('streamCategory').value;
+    const camera={id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2)),videoId,name,category,location:$('streamLocation').value.trim(),favorite:false,created:Date.now()};
+    cameras.unshift(camera);save();closeAdd();setFilter('All');$('searchInput').value='';render();playCamera(camera.id);notify('Camera added to your wildlife library!');
+  }
+  function toggleFavorite(id){const c=cameras.find(x=>x.id===id);if(!c)return;c.favorite=!c.favorite;save();render();}
+  function removeCamera(id){
+    const c=cameras.find(x=>x.id===id);if(!c)return;
+    if(!confirm(`Remove "${c.name}" from your camera library?`))return;
+    cameras=cameras.filter(x=>x.id!==id);
+    if(currentId===id){currentId=null;$('videoFrame').innerHTML='<div class="empty-player"><div class="big">🌿</div><h3>Choose your next wild encounter</h3><p>Select another camera from your library or add a new YouTube stream.</p><button class="primary" id="playerAddInline">＋ Add a camera</button></div>';$('playerAddInline').addEventListener('click',openAdd);$('playingTitle').textContent='Your wildlife screen';$('playingSubtitle').textContent='Choose a camera to begin watching';$('footTitle').textContent='Ready for your next adventure';$('footMeta').textContent='Birdsong, watering holes, nests and more';$('openYoutube').disabled=true;$('reloadPlayer').disabled=true;}
+    save();render();notify('Camera removed.');
+  }
+  function backup(){
+    const data={app:'Wildlife Live TV',version:1,exportedAt:new Date().toISOString(),cameras};
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='wildlife-live-tv-backup.json';a.click();URL.revokeObjectURL(url);notify('Camera list backup downloaded.');
+  }
+  function restore(file){
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      try{
+        const parsed=JSON.parse(reader.result);const incoming=Array.isArray(parsed)?parsed:parsed.cameras;
+        if(!Array.isArray(incoming))throw new Error('bad');
+        let added=0;
+        incoming.forEach(c=>{if(c&&isValidId(c.videoId)&&typeof c.name==='string'&&!cameras.some(x=>x.videoId===c.videoId)){cameras.push({id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),videoId:c.videoId,name:c.name.slice(0,90),category:categories.includes(c.category)?c.category:'Other',location:String(c.location||'').slice(0,100),favorite:!!c.favorite,created:Number(c.created)||Date.now()});added++;}});
+        save();render();notify(`Restored ${added} camera${added===1?'':'s'}.`);
+      }catch(e){notify('That backup file could not be read.');}
+      $('importFile').value='';
+    };
+    reader.readAsText(file);
+  }
+  $('addTop').addEventListener('click',openAdd);$('addLibrary').addEventListener('click',openAdd);$('addFirst').addEventListener('click',openAdd);$('emptyAdd').addEventListener('click',openAdd);
+  $('closeDialog').addEventListener('click',closeAdd);$('cancelAdd').addEventListener('click',closeAdd);$('addForm').addEventListener('submit',addCamera);
+  $('searchInput').addEventListener('input',render);$('sortSelect').addEventListener('change',render);
+  $('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(b)setFilter(b.dataset.filter);});
+  document.querySelectorAll('.quick').forEach(b=>b.addEventListener('click',()=>{setFilter(b.dataset.category);document.querySelector('.library-wrap').scrollIntoView({behavior:'smooth'});}));
+  $('cameraGrid').addEventListener('click',e=>{
+    const watch=e.target.closest('[data-watch]'),fav=e.target.closest('[data-fav]'),remove=e.target.closest('[data-remove]');
+    if(watch)playCamera(watch.dataset.watch);
+    if(fav)toggleFavorite(fav.dataset.fav);
+    if(remove)removeCamera(remove.dataset.remove);
+  });
+  $('openYoutube').addEventListener('click',()=>{const c=cameras.find(x=>x.id===currentId);if(c)window.open(`https://www.youtube.com/watch?v=${encodeURIComponent(c.videoId)}`,'_blank','noopener,noreferrer');});
+  $('reloadPlayer').addEventListener('click',()=>{if(currentId)playCamera(currentId);});
+  $('exportBtn').addEventListener('click',backup);$('importBtn').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',e=>restore(e.target.files[0]));
+  $('addDialog').addEventListener('click',e=>{if(e.target===$('addDialog'))closeAdd();});
+  render();
+  // YouTube Error 153 commonly occurs when a local file has no HTTP Referer.
+  if (location.protocol === 'file:') {
+    setTimeout(() => notify('Tip: for YouTube playback, run this page via localhost or HTTPS. See the setup note.'), 900);
+  }
+})();
+</script>
+</body>
+</html>
