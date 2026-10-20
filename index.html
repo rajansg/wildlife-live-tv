@@ -56,7 +56,7 @@ dialog{border:1px solid var(--line);border-radius:20px;background:#121e18;color:
       <div class="controls">
         <div class="search"><input id="searchInput" type="search" placeholder="Search cameras, places, wildlife…" aria-label="Search cameras"></div>
         <select id="sortSelect" aria-label="Sort cameras"><option value="recent">Recently added</option><option value="az">Name A–Z</option><option value="favorites">Favourites first</option></select>
-        <button id="exportBtn" title="Download a backup of your camera list">⇩ Backup</button>
+        <button id="exportBtn" title="Download streams.json to publish your camera changes on GitHub">⇩ Export JSON</button>
         <button id="importBtn" title="Restore a camera list backup">⇧ Restore</button><input type="file" id="importFile" accept="application/json,.json" hidden>
       </div>
       <div class="tabs" id="tabs">
@@ -71,7 +71,7 @@ dialog{border:1px solid var(--line);border-radius:20px;background:#121e18;color:
       </div>
       <div id="cameraGrid" class="camera-grid"></div>
       <div id="emptyGrid" class="empty-grid" hidden><div class="big">🔭</div><h3 id="emptyTitle">Your camera library is waiting</h3><p id="emptyText">Add a YouTube live stream to build your own wildlife TV channel.</p><button id="emptyAdd" class="primary">＋ Add a camera</button></div>
-      <div class="footer"><span>Wildlife Live TV · A personal browser-based stream library</span><span>Your list is stored locally in this browser.</span></div>
+      <div class="footer"><span>Wildlife Live TV · Camera catalogue: streams.json</span><span>To publish changes for everyone, export JSON and replace streams.json in GitHub.</span></div>
     </section>
   </main>
 </div>
@@ -97,25 +97,44 @@ dialog{border:1px solid var(--line);border-radius:20px;background:#121e18;color:
   const STORAGE_KEY = 'wildlifeLiveTV.cameras.v1';
   const categories = ['African Wildlife','Birds','Nests','Forest','Ocean','Other'];
   const icons = {'African Wildlife':'🦁','Birds':'🦜','Nests':'🪺','Forest':'🌳','Ocean':'🌊','Other':'✨'};
-  let cameras = loadCameras();
+  let cameras = [];
+  let catalogueLoaded = false;
   let activeFilter = 'All';
   let currentId = null;
   let toastTimer;
 
   const $ = id => document.getElementById(id);
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function loadCameras(){
-    let saved = [];
+  function loadLocalCameras(){
     try {
       const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      saved = Array.isArray(raw) ? raw.filter(c => c && c.id && c.name && c.videoId && /^[\w-]{11}$/.test(c.videoId)).map(c => ({...c,category:categories.includes(c.category)?c.category:'Other',favorite:!!c.favorite})) : [];
-    } catch(e) { saved = []; }
-    // Include the user's requested stream automatically, while preserving their saved cameras.
-    if (!saved.some(c => c.videoId === 'XsOU8JnEpNM')) {
-      saved.unshift({id:'preset-XsOU8JnEpNM', videoId:'XsOU8JnEpNM', name:'Wildlife Live Stream — XsOU8JnEpNM', category:'African Wildlife', location:'YouTube', favorite:false, created:Date.now()});
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch(e) {}
+      return Array.isArray(raw) ? raw.filter(c => c && c.id && c.name && c.videoId && /^[\w-]{11}$/.test(c.videoId)).map(c => ({...c,category:categories.includes(c.category)?c.category:'Other',favorite:!!c.favorite})) : [];
+    } catch(e) { return []; }
+  }
+  async function initialiseCameras(){
+    let catalogue = [];
+    try {
+      const response = await fetch('./streams.json', {cache:'no-store'});
+      if (!response.ok) throw new Error('Could not load streams.json');
+      const data = await response.json();
+      if (Array.isArray(data)) catalogue = data;
+    } catch(e) {
+      console.warn('Camera catalogue could not be loaded; using browser-saved cameras.', e);
     }
-    return saved;
+    const valid = items => items.filter(c => c && typeof c.name === 'string' && /^[\w-]{11}$/.test(c.videoId || '')).map(c => ({
+      id: c.id || ('camera-' + c.videoId), videoId:c.videoId, name:c.name.slice(0,90),
+      category:categories.includes(c.category)?c.category:'Other', location:String(c.location||'').slice(0,100),
+      favorite:!!c.favorite, created:Number(c.created)||Date.now()
+    }));
+    const combined = valid(catalogue);
+    const local = valid(loadLocalCameras());
+    local.forEach(c => {
+      const index = combined.findIndex(x => x.videoId === c.videoId);
+      if (index >= 0) combined[index] = {...combined[index], ...c}; else combined.push(c);
+    });
+    cameras = combined;
+    catalogueLoaded = true;
+    render();
   }
   function save(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cameras)); } catch(e){ notify('Could not save. Browser storage may be full.'); } updateCount(); }
   function notify(message){ const el=$('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2600); }
@@ -207,9 +226,9 @@ dialog{border:1px solid var(--line);border-radius:20px;background:#121e18;color:
     save();render();notify('Camera removed.');
   }
   function backup(){
-    const data={app:'Wildlife Live TV',version:1,exportedAt:new Date().toISOString(),cameras};
+    const data=cameras.map(c=>({id:c.id,videoId:c.videoId,name:c.name,category:c.category,location:c.location||'',favorite:!!c.favorite,created:c.created||Date.now()}));
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='wildlife-live-tv-backup.json';a.click();URL.revokeObjectURL(url);notify('Camera list backup downloaded.');
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='streams.json';a.click();URL.revokeObjectURL(url);notify('streams.json downloaded. Upload it to your GitHub repository to publish changes.');
   }
   function restore(file){
     if(!file)return;
@@ -220,7 +239,7 @@ dialog{border:1px solid var(--line);border-radius:20px;background:#121e18;color:
         if(!Array.isArray(incoming))throw new Error('bad');
         let added=0;
         incoming.forEach(c=>{if(c&&isValidId(c.videoId)&&typeof c.name==='string'&&!cameras.some(x=>x.videoId===c.videoId)){cameras.push({id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),videoId:c.videoId,name:c.name.slice(0,90),category:categories.includes(c.category)?c.category:'Other',location:String(c.location||'').slice(0,100),favorite:!!c.favorite,created:Number(c.created)||Date.now()});added++;}});
-        save();render();notify(`Restored ${added} camera${added===1?'':'s'}.`);
+        save();render();notify(`Restored ${added} camera${added===1?'':'s'} in this browser. Export JSON to publish on GitHub.`);
       }catch(e){notify('That backup file could not be read.');}
       $('importFile').value='';
     };
